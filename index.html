@@ -214,7 +214,12 @@
           <span class="title-sub">마지막 1%를 완성하는 정밀 피드백</span>
         </h1>
         <p class="hero-description">"이미 99% 완성된 당신의 예술, 전문가와 함께 마지막 1%를 채워보세요"</p>
-        <div class="availability-badge" aria-live="polite">⚠️ 이번 달 남은 자리: <strong>7/10명</strong></div>
+        <div class="availability-badge" aria-live="polite">
+  ⚠️ 이번 달 남은 자리:
+  <strong>
+    <span class="count" data-target="7">0</span>/10명
+  </strong>
+</div>
         <div class="hero-stats">
           <div class="stat-item"><span class="stat-number">10명</span><span class="stat-label">한 달 한정</span></div>
           <div class="stat-divider"></div>
@@ -1039,7 +1044,6 @@
     btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
   });
 
-  // 추가: 메뉴 링크 클릭 시 자동 닫힘
   document.querySelectorAll('#navLinks a').forEach(a=>{
     a.addEventListener('click', ()=>{
       if (nav.classList.contains('open')) {
@@ -1048,6 +1052,63 @@
       }
     });
   });
+
+  //  추가: 스크롤 시 자동 닫힘 (모바일 메뉴가 열려 있을 때만)
+  (function(){
+    let lastY = window.pageYOffset;
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(()=>{
+        const currentY = window.pageYOffset;
+        const goingDown = currentY > lastY + 4; // 미세 스크롤 무시
+        const isMobile = window.matchMedia('(max-width: 900px)').matches;
+        if (isMobile && goingDown && nav.classList.contains('open')) {
+          nav.classList.remove('open');
+          btn.setAttribute('aria-expanded','false');
+        }
+        lastY = currentY;
+        ticking = false;
+      });
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+  })();
+   // 남은 자리 카운트업
+  (function(){
+    const el = document.querySelector('.availability-badge .count');
+    if (!el) return;
+
+    const target = Number(el.getAttribute('data-target') || '0');
+    const DURATION = 1000; // 1초 동안 애니메이션
+    const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+    const start = performance.now();
+
+    function frame(now){
+      const progress = Math.min(1, (now - start) / DURATION);
+      const eased = easeOutCubic(progress);
+      const current = Math.floor(eased * target);
+      el.textContent = current;
+      if (progress < 1) requestAnimationFrame(frame);
+      else el.textContent = target;
+    }
+
+    // 히어로 영역이 보일 때 시작 (스크롤 내릴 필요 없음)
+    const hero = document.querySelector('.hero');
+    if ('IntersectionObserver' in window && hero){
+      const observer = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if (entry.isIntersecting){
+            requestAnimationFrame(frame);
+            observer.disconnect();
+          }
+        });
+      }, {threshold:0.2});
+      observer.observe(hero);
+    } else {
+      requestAnimationFrame(frame);
+    }
+  })();
 </script>
 
 </body>
