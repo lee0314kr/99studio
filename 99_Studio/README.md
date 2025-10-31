@@ -114,7 +114,7 @@ http-server -p 8000
 ## 🔗 외부 링크
 
 모든 CTA 버튼은 실제 Google Forms 링크로 연결됩니다:
-- https://forms.gle/DXcpnzof4Wp6hFgR8
+- https://forms.gle/cFBANMdDdd8JEiyW9
 
 ## 🛠️ 커스터마이징
 
