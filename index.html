@@ -422,7 +422,7 @@
           <div class="value-icon" aria-hidden="true">💰</div>
           <h3 id="value-afford" class="value-title">부담 없음</h3>
           <p class="value-desc">
-            1회 레슨 비용의 <span class="value-highlight">1/15 가격</span><br>
+            1회 레슨 비용의 <span class="value-highlight">1/10 가격</span><br>
             장소 이동 없이, 시간 제약 없이<br>
             원하는 만큼만 이용하세요
           </p>
@@ -960,8 +960,7 @@
   </section>
 
   <!-- 신청 방법 -->
-<section id="apply" class="apply"></section>
-  <section class="how-to-apply">
+<section id="apply" class="how-to-apply">
     <div class="container">
       <h2 class="section-title">📝 신청 방법 (3단계)</h2>
       <div class="steps-grid">
@@ -1034,14 +1033,23 @@
   <script>
     // 모바일 메뉴
     const btn = document.getElementById('menuBtn');
-    const nav = document.getElementById('navLinks');
-    btn?.addEventListener('click', ()=>{
-      const opened = nav.classList.toggle('open');
-      btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+  const nav = document.getElementById('navLinks');
+  btn?.addEventListener('click', ()=>{
+    const opened = nav.classList.toggle('open');
+    btn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+  });
+
+  // 추가: 메뉴 링크 클릭 시 자동 닫힘
+  document.querySelectorAll('#navLinks a').forEach(a=>{
+    a.addEventListener('click', ()=>{
+      if (nav.classList.contains('open')) {
+        nav.classList.remove('open');
+        btn.setAttribute('aria-expanded','false');
+      }
     });
-    // (선택) 남은 자리 동적 갱신 예시
-    // const left = 7, total = 10;
-    // document.querySelectorAll('[aria-live="polite"]').forEach(el=> el.textContent = `이번 달 남은 자리: ${left}/${total}`);
-  </script>
+  });
+</script>
+
 </body>
 </html>
+
